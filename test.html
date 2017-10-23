@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id = "audio"></div>
+<!--<audio id="sound1" src="/public/voice.mp3" preload="auto"></audio>-->
+<button onclick=playSound()>Play
+    it</button>
+</body>
+<script>
+    function playSound() {
+        //document.getElementById('sound1').play();
+        var sound      = document.createElement('audio');
+        sound.id       = 'audio-player';
+        sound.autoplay = 'autoplay';
+        sound.src      = 'public/voice.mp3';
+        sound.type     = 'audio/mpeg';
+        document.getElementById('audio').appendChild(sound);
+
+    }
+
+
+</script>
+</html>

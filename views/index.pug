@@ -1,0 +1,52 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Title
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+
+    body
+        input#message.enter(type='text', name='enter', value='')
+        button
+            | Play
+            | it
+
+        div#audio
+            //audio#sound1(src='voice.mp3', preload='auto')
+
+    script.
+        $(document).ready(function () {
+            $("button").click(function () {
+
+                var query = document.getElementById('message').value;
+
+                $.post("/bot",
+                    {
+                        query: query
+                    },
+                    function (data, status) {
+                        console.log(data);
+                        console.log(status);
+                        if(status === "success"){
+                            //document.getElementById('sound1').play();
+                            var voice = "voice.mp3";
+                            var audioPlayer =  $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
+                            /*var sound = document.createElement('audio');
+                            sound.id = 'audio-player';
+                            sound.autoplay = 'autoplay';
+                            sound.src = encodeURI(voice);
+                            console.log(sound.src);
+                            sound.type = 'audio/mpeg';
+                            var container = document.getElementById('audio');
+                            container.innerHTML ='';
+                            container.appendChild(sound);*/
+
+                        }
+
+                    });
+
+
+            });
+        });
+
+

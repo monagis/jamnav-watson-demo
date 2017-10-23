@@ -1,0 +1,27 @@
+{
+	"name": "NodejsStarterApp",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"assert": "^1.4.1",
+		"body-parser": "~1.18.2",
+		"cfenv": "1.0.x",
+		"cookie-parser": "~1.4.3",
+		"debug": "~2.6.9",
+		"express": "4.15.x",
+		"fs": "0.0.1-security",
+		"googleplaces": "^0.6.1",
+		"morgan": "~1.9.0",
+		"path": "^0.12.7",
+		"pug": "2.0.0-beta11",
+		"serve-favicon": "~2.4.5",
+		"watson-developer-cloud": "^2.41.1"
+	},
+	"repository": {},
+	"engines": {
+		"node": "6.x"
+	}
+}
