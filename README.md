@@ -11,5 +11,6 @@ More description to be added later
 1. Run `npm install` to install the app's dependencies
 1. Run `node app.js` to start the app
 1. Access the running app in a browser at <http://localhost:6001>
+1. Try 'ATMs in Kingston Jamaica'
 
 [Install Node.js]: https://nodejs.org/en/download/

@@ -8,8 +8,8 @@ html(lang='en')
     body
         input#message.enter(type='text', name='enter', value='')
         button
-            | Play
-            | it
+            | Ask
+            | Watson
 
         div#audio
             //audio#sound1(src='voice.mp3', preload='auto')
@@ -20,7 +20,7 @@ html(lang='en')
 
                 var query = document.getElementById('message').value;
 
-                $.post("/bot",
+                $.post("/",
                     {
                         query: query
                     },
