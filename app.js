@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
-app.use('/bot', bot);
+app.use('/', bot);
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
