@@ -4,46 +4,76 @@ html(lang='en')
         meta(charset='UTF-8')
         title Title
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        link(rel='stylesheet', href='https://necolas.github.io/normalize.css/3.0.2/normalize.css')
+        link(rel='stylesheet', href='css/mystyle.css')
+        link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&subset=latin,latin-ext')
+
 
     body
-        input#message.enter(type='text', name='enter', value='')
-        button
-            | Ask
-            | Watson
+        nav.navbar
+            .container
+                h1.logo
+                    a(href='/') Watson-Jamnav Demo
 
-        div#audio
-            //audio#sound1(src='voice.mp3', preload='auto')
+            // /.container
+        // /.navbar
+        .container
+
+            fieldset
+                input#message.enter(type='text', name='enter', value='')
+                label(for='text') Ask Watson here
+                .after
+            fieldset
+                button
+                    | Ask
+                    | Watson
+
 
     script.
+        $(".myaudio").hide();
         $(document).ready(function () {
-            $("button").click(function () {
+            var geoData;
 
+
+
+            $("button").click(function () {
+                var x = document.getElementById("geotext");
                 var query = document.getElementById('message').value;
 
-                $.post("/",
-                    {
-                        query: query
-                    },
-                    function (data, status) {
-                        console.log(data);
-                        console.log(status);
-                        if(status === "success"){
-                            //document.getElementById('sound1').play();
-                            var voice = "voice.mp3";
-                            var audioPlayer =  $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
-                            /*var sound = document.createElement('audio');
-                            sound.id = 'audio-player';
-                            sound.autoplay = 'autoplay';
-                            sound.src = encodeURI(voice);
-                            console.log(sound.src);
-                            sound.type = 'audio/mpeg';
-                            var container = document.getElementById('audio');
-                            container.innerHTML ='';
-                            container.appendChild(sound);*/
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var lat = position.coords.latitude
+                        var long = position.coords.longitude
+                        $.post("/",
+                            {
+                                query: query,
+                                lat: lat,
+                                long: long
+                            },
+                            function (data, status) {
+                                console.log(data);
+                                console.log(status);
+                                if (status === "success") {
+                                    //document.getElementById('sound1').play();
 
-                        }
+                                    var voice = "voice.mp3";
+                                    $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
+                                    $(".myaudio").show();
+
+
+                                }
+
+                            });
+
+                        $(".myaudio").hide();
 
                     });
+
+                } else {
+                    x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+
+
 
 
             });
