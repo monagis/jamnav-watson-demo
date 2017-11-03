@@ -12,21 +12,25 @@ html(lang='en')
     body
         nav.navbar
             .container
-                h1.logo
+                h3.logo
                     a(href='/') Watson-Jamnav Demo
 
             // /.container
         // /.navbar
         .container
+            .inputArea
+                img(src='/img/watson.png' style="width: 131px; height: 100px; margin: 20px auto; display: block")
+                fieldset
+                    input#message.enter(type='text', name='enter', value='')
+                    label(for='text') Ask Watson here
+                    .after
+                fieldset
+                    button
+                        | Ask
+                        | Watson
+                div.myaudio(style="margin: 20px auto")
 
-            fieldset
-                input#message.enter(type='text', name='enter', value='')
-                label(for='text') Ask Watson here
-                .after
-            fieldset
-                button
-                    | Ask
-                    | Watson
+                    //audio#sound1(src='voice.mp3', preload='auto')
 
 
     script.

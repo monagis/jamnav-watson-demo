@@ -57,9 +57,9 @@ body {
     float: right;
     line-height: 39px;
 }
-form {
+.inputArea {
     width: 500px;
-    margin: 200px auto;
+    margin: 45px auto;
 }
 
 fieldset {
