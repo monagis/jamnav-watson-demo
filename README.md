@@ -24,6 +24,7 @@ To customize this application you need to:
 [Install Node.js]: https://nodejs.org/en/download/
 [Bluemix Acccount]: https://console.bluemix.net/
 [Jamnav API]: https://api.jamnav.com/auth/sign-up/
+[Jamnav API]: https://api.jamnav.com/auth/hackathon-registration/
 [Watson Text to Speech service]: https://www.ibm.com/watson/services/text-to-speech/
 [Watson Conversaino Service]: https://console.bluemix.net/docs/services/conversation/index.html
 [instructions]:https://console.bluemix.net/docs/manageapps/depapps.html#deployingapps
