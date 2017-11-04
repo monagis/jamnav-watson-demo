@@ -6,7 +6,9 @@
 body {
     padding: 0;
     margin: 0;
-    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #fafafa;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
     line-height: 1.4;
 }
 
@@ -61,6 +63,16 @@ body {
     width: 500px;
     margin: 45px auto;
 }
+#map {
+    height: 280px;
+    margin: 15px;
+}
+.card {
+
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    background-color: white;
+
+}
 
 fieldset {
     position: relative;
@@ -86,14 +98,30 @@ input:valid ~ label {
 }
 
 input {
-    font-size: 20px;
+    font-size: 14px;
     width: 100%;
     border: none;
     margin-top: 10px;
+    text-align: center;
 }
 
 input:focus {
     outline: none;
+}
+.content{
+    position: relative;
+}
+
+.top{
+    position: relative;
+    padding: 8px;
+    background-color:#1E88E5;
+    border-radius-top-left: 2px;
+    border-radius-top-right: 2px;
+    height: 72px;
+    text-align: center;
+    color: #fff;
+
 }
 
 .after {

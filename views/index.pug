@@ -4,13 +4,16 @@ html(lang='en')
         meta(charset='UTF-8')
         title Title
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js')
         link(rel='stylesheet', href='https://necolas.github.io/normalize.css/3.0.2/normalize.css')
         link(rel='stylesheet', href='css/mystyle.css')
         link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&subset=latin,latin-ext')
+        link(rel='stylesheet', href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css')
+
 
 
     body
-        nav.navbar
+        //nav.navbar
             .container
                 h3.logo
                     a(href='/') Watson-Jamnav Demo
@@ -18,23 +21,34 @@ html(lang='en')
             // /.container
         // /.navbar
         .container
-            .inputArea
-                img(src='/img/watson.png' style="width: 131px; height: 100px; margin: 20px auto; display: block")
-                fieldset
-                    input#message.enter(type='text', name='enter', value='')
-                    label(for='text') Ask Watson here
-                    .after
-                fieldset
-                    button
-                        | Ask
-                        | Watson
-                div.myaudio(style="margin: 20px auto")
+            .inputArea.card
+                .content
+                    .top
+                        h4(style="margin-top: 14px; font-size: 2.12em; font-weight: 100;") ABM BOT
+                    img(src='/img/watson.png' style="width: 131px; height: 100px; margin: 20px auto; display: block")
+                    fieldset
+                        input#message.enter(type='text', name='enter', value='', placeholder="Ask Watson here...")
+                        .after
+                    fieldset
+                        button
+                            | Ask
+                            | Watson
+                    .map-container(style="margin: 16px auto")
+                        #map
+
 
                     //audio#sound1(src='voice.mp3', preload='auto')
 
-
     script.
-        $(".myaudio").hide();
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
+            center: [-96, 37.8], // starting position [lng, lat]
+            zoom: 3 // starting zoom
+        });
+        //$(".map-container").hide();
         $(document).ready(function () {
             var geoData;
 
@@ -62,14 +76,54 @@ html(lang='en')
 
                                     var voice = "voice.mp3";
                                     $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
-                                    $(".myaudio").show();
+                                    map.on('ready', function () {
+                                        map.addLayer({
+                                            "id": "points",
+                                            "type": "symbol",
+                                            "source": {
+                                                "type": "geojson",
+                                                "data": {
+                                                    "type": "FeatureCollection",
+                                                    "features": [{
+                                                        "type": "Feature",
+                                                        "geometry": {
+                                                            "type": "Point",
+                                                            "coordinates": [-77.03238901390978, 38.913188059745586]
+                                                        },
+                                                        "properties": {
+                                                            "title": "Mapbox DC",
+                                                            "icon": "monument"
+                                                        }
+                                                    }, {
+                                                        "type": "Feature",
+                                                        "geometry": {
+                                                            "type": "Point",
+                                                            "coordinates": [-122.414, 37.776]
+                                                        },
+                                                        "properties": {
+                                                            "title": "Mapbox SF",
+                                                            "icon": "harbor"
+                                                        }
+                                                    }]
+                                                }
+                                            },
+                                            "layout": {
+                                                "icon-image": "{icon}-15",
+                                                "text-field": "{title}",
+                                                "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                                                "text-offset": [0, 0.6],
+                                                "text-anchor": "top"
+                                            }
+                                        });
+                                    });
+                                    //$(".map-container").show();
 
 
                                 }
 
                             });
 
-                        $(".myaudio").hide();
+                        //$(".map-container").hide();
 
                     });
 
