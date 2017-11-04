@@ -6,14 +6,14 @@ var request = require('request');
 //var assert = require('assert');
 //var googleplaces = require('googleplaces');
 var text_to_speech = new TextToSpeechV1 ({
-    username: '<yourusername>',
-    password: '<yourpassword>'
+    username: '318fe234-f034-4b26-8d0c-7b181c0084f5',
+    password: '2bu1CzqikxsV'
 });
 //var config = require('../config.js');
 var fs = require('fs');
 var conversation = watson.conversation({
-    username: '<yourusername>',
-    password: '<yourpassword>',
+    username: '9caa628c-72c4-40b5-acb3-ebe23a14197c',
+    password: 'RtW4nzC6Fl0H',
     version: 'v1',
     version_date: '2017-05-26'
 });
@@ -54,7 +54,7 @@ router.route('/')
                 var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
 
                 var headers = {
-                    'Authorization': 'Token <yourtoken>'
+                    'Authorization': 'Token 0500aa8225ea4e5a2a1052334d712907b5265c51'
 
                 };
 
