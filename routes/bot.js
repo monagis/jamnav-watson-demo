@@ -85,7 +85,10 @@ router.route('/')
                             console.log('Error:', error);
                         }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
                             console.log("Finished writing the file");
-                            res.json({"audio-file": "check the audio file"});
+                            res.json({
+                              "audio-file": "check the audio file",
+                              "features": data.features
+                            });
                         });
                     }
                 });

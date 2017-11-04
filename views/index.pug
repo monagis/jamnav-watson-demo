@@ -48,6 +48,40 @@ html(lang='en')
             center: [-96, 37.8], // starting position [lng, lat]
             zoom: 3 // starting zoom
         });
+        
+        var clearMap = function() {
+            map.removeLayer("results");
+        };
+        
+        var updateMap = function(features, position) {
+            var layer = map.addLayer({
+                "id": "results",
+                "type": "symbol",
+                "source": {
+                    "type": "geojson",
+                    "data": {
+                        "type": "FeatureCollection",
+                        "features": features
+                    }
+                },
+                "layout": {
+                    "icon-image": "bank-15",
+                    "text-field": "{name}",
+                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                    "text-offset": [0, 0.6],
+                    "text-anchor": "top"
+                }
+            });
+            map.flyTo({
+                center: [
+                    position.coords.longitude,
+                    position.coords.latitude,
+                ],
+                zoom: 12
+            });
+            
+        };
+        
         //$(".map-container").hide();
         $(document).ready(function () {
             var geoData;
@@ -76,46 +110,8 @@ html(lang='en')
 
                                     var voice = "voice.mp3";
                                     $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
-                                    map.on('ready', function () {
-                                        map.addLayer({
-                                            "id": "points",
-                                            "type": "symbol",
-                                            "source": {
-                                                "type": "geojson",
-                                                "data": {
-                                                    "type": "FeatureCollection",
-                                                    "features": [{
-                                                        "type": "Feature",
-                                                        "geometry": {
-                                                            "type": "Point",
-                                                            "coordinates": [-77.03238901390978, 38.913188059745586]
-                                                        },
-                                                        "properties": {
-                                                            "title": "Mapbox DC",
-                                                            "icon": "monument"
-                                                        }
-                                                    }, {
-                                                        "type": "Feature",
-                                                        "geometry": {
-                                                            "type": "Point",
-                                                            "coordinates": [-122.414, 37.776]
-                                                        },
-                                                        "properties": {
-                                                            "title": "Mapbox SF",
-                                                            "icon": "harbor"
-                                                        }
-                                                    }]
-                                                }
-                                            },
-                                            "layout": {
-                                                "icon-image": "{icon}-15",
-                                                "text-field": "{title}",
-                                                "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                                                "text-offset": [0, 0.6],
-                                                "text-anchor": "top"
-                                            }
-                                        });
-                                    });
+                                    clearMap();
+                                    updateMap(data.features, position);
                                     //$(".map-container").show();
 
 
@@ -136,5 +132,3 @@ html(lang='en')
 
             });
         });
-
-
