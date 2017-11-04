@@ -6,14 +6,14 @@ var request = require('request');
 //var assert = require('assert');
 //var googleplaces = require('googleplaces');
 var text_to_speech = new TextToSpeechV1 ({
-    username: '318fe234-f034-4b26-8d0c-7b181c0084f5',
-    password: '2bu1CzqikxsV'
+    username: '<yourusername>',
+    password: '<yourpassword>'
 });
 //var config = require('../config.js');
 var fs = require('fs');
 var conversation = watson.conversation({
-    username: '9caa628c-72c4-40b5-acb3-ebe23a14197c',
-    password: 'RtW4nzC6Fl0H',
+    username: '<yourusername>',
+    password: '<yourpassword>',
     version: 'v1',
     version_date: '2017-05-26'
 });
@@ -54,7 +54,7 @@ router.route('/')
                 var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
 
                 var headers = {
-                    'Authorization': 'Token 0500aa8225ea4e5a2a1052334d712907b5265c51'
+                    'Authorization': 'Token <yourtoken>'
 
                 };
 
@@ -65,14 +65,32 @@ router.route('/')
 
                 request(options, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        var data = JSON.parse(body);
-                        var count = data.features.length.toString();
-                        if(intent === "findATM"){
-                            text_to_send = mytext.replace("Number", count);
+                        var data = JSON.parse(body).features;
+                        var filtered = [];
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].properties.name == "N.C.B. A.T.M. (National Commercial Bank)") {
+                                filtered.push(data[i]);
+                            }
+                        }
+                        var lowest = Number.POSITIVE_INFINITY;
+                        var highest = Number.NEGATIVE_INFINITY;
+                        var tmp;
+                        for (var i=filtered.length-1; i>=0; i--) {
+                            tmp = filtered[i].properties.proximity.km;
+                            if (tmp < lowest) lowest = tmp;
+                            if (tmp > highest) highest = tmp;
+                        }
+
+                        if(intent === "numberATMs"){
+                            text_to_send = mytext.replace("Number", filtered.length.toString());
 
                         }
                         else if(intent === "Greetings") {
                             text_to_send = text_arry[Math.floor(Math.random() * text_arry.length)];
+
+                        }
+                        else if (intent === "nearATM"){
+                            text_to_send = mytext.replace("number", lowest.toFixed(2));
 
                         }
 
@@ -87,22 +105,12 @@ router.route('/')
                             console.log("Finished writing the file");
                             res.json({
                               "audio-file": "check the audio file",
-                              "features": data.features
+                              "features": filtered
                             });
                         });
                     }
                 });
 
-                /*if(intent === "findATM"){
-                    //Get GPS Coordinates
-                    //Send request to Jamnav API
-
-
-                }
-                else if(intent === "Greetings") {
-                    text_to_send = text_arry[Math.floor(Math.random() * text_arry.length)];
-
-                }*/
 
 
 
@@ -111,6 +119,7 @@ router.route('/')
 
 
     });
+
 
 
 

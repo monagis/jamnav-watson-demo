@@ -2,8 +2,10 @@ doctype html
 html(lang='en')
     head
         meta(charset='UTF-8')
-        title Title
+        title Watson-Jamnav-Demo
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js")
+        link(rel='stylesheet',href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css')
         script(src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js')
         link(rel='stylesheet', href='https://necolas.github.io/normalize.css/3.0.2/normalize.css')
         link(rel='stylesheet', href='css/mystyle.css')
@@ -24,10 +26,10 @@ html(lang='en')
             .inputArea.card
                 .content
                     .top
-                        h4(style="margin-top: 14px; font-size: 2.12em; font-weight: 100;") ABM BOT
+                        h4(style="margin-top: 14px; font-size: 2.12em; font-weight: 100;") NCB ATM Parry
                     img(src='/img/watson.png' style="width: 131px; height: 100px; margin: 20px auto; display: block")
                     fieldset
-                        input#message.enter(type='text', name='enter', value='', placeholder="Ask Watson here...")
+                        input#message.enter(type='text', name='enter', value='', placeholder="Type here...")
                         .after
                     fieldset
                         button
@@ -36,57 +38,37 @@ html(lang='en')
                     .map-container(style="margin: 16px auto")
                         #map
 
-
+        .container
+            h4(style="text-align: center") Powered by JAMNAV API
                     //audio#sound1(src='voice.mp3', preload='auto')
 
     script.
 
-        mapboxgl.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
-        var map = new mapboxgl.Map({
+        //mapboxgl.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
+        L.mapbox.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
+        var map = L.mapbox.map('map', 'mapbox.streets')
+            .setView([18.003258,-76.787539], 15);
+        /*var map = new mapboxgl.Map({
             container: 'map', // container id
             style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
-            center: [-96, 37.8], // starting position [lng, lat]
-            zoom: 3 // starting zoom
-        });
+            center: [-76.787539, 18.003258], // starting position [lng, lat]
+            zoom: 12 // starting zoom
+        });*/
+
         
         var clearMap = function() {
             map.removeLayer("results");
         };
         
         var updateMap = function(features, position) {
-            var layer = map.addLayer({
-                "id": "results",
-                "type": "symbol",
-                "source": {
-                    "type": "geojson",
-                    "data": {
-                        "type": "FeatureCollection",
-                        "features": features
-                    }
-                },
-                "layout": {
-                    "icon-image": "bank-15",
-                    "text-field": "{name}",
-                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-                    "text-offset": [0, 0.6],
-                    "text-anchor": "top"
-                }
-            });
-            map.flyTo({
-                center: [
-                    position.coords.longitude,
-                    position.coords.latitude,
-                ],
-                zoom: 12
-            });
+
+            L.mapbox.featureLayer().setGeoJSON(features).addTo(map);
             
         };
+
         
         //$(".map-container").hide();
         $(document).ready(function () {
-            var geoData;
-
-
 
             $("button").click(function () {
                 var x = document.getElementById("geotext");
