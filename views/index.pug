@@ -50,7 +50,7 @@ html(lang='en')
                     //audio#sound1(src='voice.mp3', preload='auto')
 
 
-    script( async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpxBGCeQkVh7HU1FlX8MIxJhqj5_GVPEM")
+    script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpxBGCeQkVh7HU1FlX8MIxJhqj5_GVPEM")
 
     script.
         //$(".map-container").hide();
@@ -65,7 +65,7 @@ html(lang='en')
           map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
             center: uluru,
-            zoom: 14
+            zoom: 12
           });
           var marker = new google.maps.Marker({
             position: uluru,
@@ -106,6 +106,7 @@ html(lang='en')
         $(document).ready(function () {
             initMap([])
             $("button").click(function () {
+                $.LoadingOverlay("show");
                 var x = document.getElementById("geotext");
                 var query = document.getElementById('message').value;
                 console.log('button click occured')
@@ -116,15 +117,17 @@ html(lang='en')
                       long: long
                     },
                     function (data, status) {
+                    $.LoadingOverlay("hide");
                       console.log(data);
                       console.log(status);
                       if (status === "success") {
-                        initMap(data);
+                        initMap(data.features);
+                        console.log(data.features)
 
-                          //document.getElementById('sound1').play();
+                          //- document.getElementById('sound1').play();
 
-                          //- var voice = "voice.mp3";
-                          //- $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
+                           var voice = "voice.mp3";
+                           $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
 
                           //$(".map-container").show();
 

@@ -26,9 +26,18 @@ const util = require('util');
 /* GET home page. */
 app = express()
 
+function closest(array){
+  var closest = array[0]
+  for (var i = 1; i < array.length-1; i++) {
+    if (array[i].properties.proximity.km < closest.properties.proximity.km){
+      closest = array[i]
+    }
+  }
+  console.log(util.inspect(closest, { showHidden: true, depth: null }))
+  return closest
+}
 app.get('/', function (req, res) {
     res.render('index', { title: 'test' });
-    console.log("Reached endpoint /bot")
 })
 
 app.post('/', function (req, res) {
@@ -38,7 +47,6 @@ var latitude = req.body.lat;
 var longitude = req.body.long;
 var query = req.body.query;
 
-console.log("Text sent by user: "+query);
 /*/*var parameters = {
 query: query
 };*/
@@ -55,8 +63,6 @@ query: query
     var intent = response.intents[0].intent;
         var text_to_send;
         var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
-        console.log(intent)
-        console.log(text_arry)
         var headers = {
             'Authorization': 'Token 475c505a594ac7112c9efe4e3a7a4b0ee52ab689'
 
@@ -67,45 +73,45 @@ query: query
         };
 
         if (intent === 'Police_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude+"&parish=St. Andrew"
         }
         else if(intent === 'Fire_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude+"&parish=St. Andrew"
         }
 
-        console.log(options)
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body).features;
-                console.log(util.inspect(data, { showHidden: true, depth: null }));
+                count = JSON.parse(body).count;
+                proximity = []
+                data.forEach(function(entry) {
+                    proximity.push(entry.properties.proximity.km);
+                });
 
-                // if(intent === "Police_Station"){
-                //     text_to_send = mytext.replace("Number", filtered.length.toString());
+                closestPOI = closest(data)
 
-                // }
-                // else if(intent === "Fire_Station") {
-                //     text_to_send = text_arry[Math.floor(Math.random() * text_arry.length)];
+                if(intent === "Police_Station"){
+                    text_to_send = "The closest Police Station is "+closestPOI.properties.name+" and it is "+closestPOI.properties.proximity.km.toFixed(2)+"km away, they can be reached at "+closestPOI.properties.phone_number
 
-                // }
+                }
+                else if(intent === "Fire_Station") {
+                    text_to_send = "The closest Fire Station is "+closestPOI.properties.name+" and it is "+closestPOI.properties.proximity.km.toFixed(2)+"km away, they can be reached at "+closestPOI.properties.phone_number
+                }
 
-
-                res.send(data);
-
-
-                // params = {
-                //     text: text_to_send,
-                //     voice: 'en-US_AllisonVoice',
-                //     accept: 'audio/mp3'
-                // };
-                // text_to_speech.synthesize(params).on('error', function(error) {
-                //     console.log('Error:', error);
-                // }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
-                //     console.log("Finished writing the file");
-                //     res.json({
-                //       "audio-file": "check the audio file",
-                //       "features": filtered
-                //     });
-                // });
+                params = {
+                    text: text_to_send,
+                    voice: 'en-US_AllisonVoice',
+                    accept: 'audio/mp3'
+                };
+                text_to_speech.synthesize(params).on('error', function(error) {
+                    console.log('Error:', error);
+                }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
+                    console.log("Finished writing the file");
+                    res.json({
+                      "audio-file": "check the audio file",
+                      'features':[closestPOI]
+                    });
+                });
             }else{
               console.log(response.statusCode)
             }
