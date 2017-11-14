@@ -1,9 +1,22 @@
 doctype html
 html(lang='en')
     head
+        script.
+          var lat, long;
+          if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition(function (position) {
+                    lat = position.coords.latitude
+                    long = position.coords.longitude
+                   console.log(lat+" "+long)
+               });
+
+           } else {
+               x.innerHTML = "Geolocation is not supported by this browser.";
+           }
         meta(charset='UTF-8')
         title Watson-Jamnav-Demo
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.5.4/src/loadingoverlay.min.js')
         script(src="https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js")
         link(rel='stylesheet',href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css')
         script(src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js')
@@ -11,9 +24,6 @@ html(lang='en')
         link(rel='stylesheet', href='css/mystyle.css')
         link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto:400,300,700&subset=latin,latin-ext')
         link(rel='stylesheet', href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css')
-
-
-
     body
         //nav.navbar
             .container
@@ -25,92 +35,103 @@ html(lang='en')
         .container
             .inputArea.card
                 .content
-                    .top
-                        h4(style="margin-top: 14px; font-size: 2.12em; font-weight: 100;") NCB ATM Parry
-                    img(src='/img/watson.png' style="width: 131px; height: 100px; margin: 20px auto; display: block")
+
+                    img(src='/img/jamnav-logo.png' style="padding-top: 35px;width: 200px; height: 100px; margin: 20px auto; display: block")
                     fieldset
-                        input#message.enter(type='text', name='enter', value='', placeholder="Type here...")
-                        .after
-                    fieldset
+                        input#message.enter(type='text', name='enter', value='', placeholder="Ask me a question")
+                    fieldset.button-holder
                         button
-                            | Ask
-                            | Watson
+                            | Talk to API
                     .map-container(style="margin: 16px auto")
                         #map
 
         .container
-            h4(style="text-align: center") Powered by JAMNAV API
+            h4(style="text-align: center") Powered by the JAMNAV API and IBM's Watson
                     //audio#sound1(src='voice.mp3', preload='auto')
 
+
+    script( async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpxBGCeQkVh7HU1FlX8MIxJhqj5_GVPEM")
+
     script.
-
-        //mapboxgl.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
-        L.mapbox.accessToken = 'pk.eyJ1IjoibGVlejIwMTQiLCJhIjoiUHN3Nm5xbyJ9.TA_6Y4IXgrtqa3Ol2hCObA';
-        var map = L.mapbox.map('map', 'mapbox.streets')
-            .setView([18.003258,-76.787539], 15);
-        /*var map = new mapboxgl.Map({
-            container: 'map', // container id
-            style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
-            center: [-76.787539, 18.003258], // starting position [lng, lat]
-            zoom: 12 // starting zoom
-        });*/
-
-        
-        var clearMap = function() {
-            map.removeLayer("results");
-        };
-        
-        var updateMap = function(features, position) {
-
-            L.mapbox.featureLayer().setGeoJSON(features).addTo(map);
-            
-        };
-
-        
         //$(".map-container").hide();
-        $(document).ready(function () {
 
+        //- Google maps stuff
+
+
+        var lat, long;
+        var map;
+        function initMap(data) {
+          var uluru = {lat: 18.014251599999998, lng: -76.75152489999999};
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: uluru,
+            zoom: 14
+          });
+          var marker = new google.maps.Marker({
+            position: uluru,
+            map: map,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              strokeColor: '#641E16',
+              scale: 10
+            }
+          });
+
+          for(var x=0; x<data.length;x++){
+            console.log('adding markers...')
+            latitude = data[x].geometry.coordinates[1];
+            longitude = data[x].geometry.coordinates[0];
+            var myLatlng = new google.maps.LatLng(latitude,longitude);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                title:"Hello World!",
+                'map': map
+            });
+          }
+
+        }
+        $.LoadingOverlay("show");
+        if (navigator.geolocation) {
+             navigator.geolocation.getCurrentPosition(function (position) {
+                $.LoadingOverlay("hide");
+
+                lat = position.coords.latitude
+                long = position.coords.longitude
+             });
+
+         } else {
+             x.innerHTML = "Geolocation is not supported by this browser.";
+         }
+
+        $(document).ready(function () {
+            initMap([])
             $("button").click(function () {
                 var x = document.getElementById("geotext");
                 var query = document.getElementById('message').value;
+                console.log('button click occured')
+                $.post("/",
+                    {
+                      query: query,
+                      lat: lat,
+                      long: long
+                    },
+                    function (data, status) {
+                      console.log(data);
+                      console.log(status);
+                      if (status === "success") {
+                        initMap(data);
 
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        var lat = position.coords.latitude
-                        var long = position.coords.longitude
-                        $.post("/",
-                            {
-                                query: query,
-                                lat: lat,
-                                long: long
-                            },
-                            function (data, status) {
-                                console.log(data);
-                                console.log(status);
-                                if (status === "success") {
-                                    //document.getElementById('sound1').play();
+                          //document.getElementById('sound1').play();
 
-                                    var voice = "voice.mp3";
-                                    $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
-                                    clearMap();
-                                    updateMap(data.features, position);
-                                    //$(".map-container").show();
+                          //- var voice = "voice.mp3";
+                          //- $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
+
+                          //$(".map-container").show();
 
 
-                                }
-
-                            });
-
+                      }
+                    }
+                  );
                         //$(".map-container").hide();
-
-                    });
-
-                } else {
-                    x.innerHTML = "Geolocation is not supported by this browser.";
-                }
-
-
-
-
             });
         });
