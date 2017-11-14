@@ -1,127 +1,123 @@
 var express = require('express');
 var router = express.Router();
-var watson = require('watson-developer-cloud');
+var ConversationV1 = require('watson-developer-cloud/conversation/v1');
 var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 var request = require('request');
 //var assert = require('assert');
 //var googleplaces = require('googleplaces');
 var text_to_speech = new TextToSpeechV1 ({
-    username: '318fe234-f034-4b26-8d0c-7b181c0084f5',
-    password: '2bu1CzqikxsV'
+    username: '5bd6c555-a485-41a1-8854-bddfdd00e16f',
+    password: 'z5YmLkDYh5Ve'
 });
 //var config = require('../config.js');
 var fs = require('fs');
-var conversation = watson.conversation({
-    username: '9caa628c-72c4-40b5-acb3-ebe23a14197c',
-    password: 'RtW4nzC6Fl0H',
+var conversation = new ConversationV1({
+    username: '4ebede69-4162-427f-916d-47631a69bd03',
+    password: 'JyoAV6amHoIv',
+    path: { workspace_id: 'acd6a15a-6be0-4a92-b0a9-8a3bd49adb4e' },
     version: 'v1',
     version_date: '2017-05-26'
 });
+const util = require('util');
 
 
 //var googlePlaces = new googleplaces(config.apiKey, config.outputFormat);
 
 /* GET home page. */
+app = express()
 
-router.route('/')
-    .get(function (req, res, next) {
-        res.render('index', { title: 'test' });
-        console.log("Reached endpoint /bot")
-
+app.get('/', function (req, res) {
+    res.render('index', { title: 'test' });
+    console.log("Reached endpoint /bot")
 })
-    .post(function (req, res) {
-        var params = {};
-        var latitude = req.body.lat;
-        var longitude = req.body.long;
-        var query = req.body.query;
 
-        console.log("Text sent by user: "+query);
-        /*var parameters = {
-            query: query
-        };*/
+app.post('/', function (req, res) {
 
-        conversation.message({
-            workspace_id: '10e1a750-5418-44bb-ab4f-b1a32776e6a7',
-            input: {'text': query}
-        },  function(err, response) {
-            if (err)
-                console.log('error:', err);
-            else
-                var text_arry = response.output.text;
-                // Get intent
-                var intent = response.intents[0].intent;
-                var text_to_send;
-                var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
+var params = {};
+var latitude = req.body.lat;
+var longitude = req.body.long;
+var query = req.body.query;
 
-                var headers = {
-                    'Authorization': 'Token 0500aa8225ea4e5a2a1052334d712907b5265c51'
+console.log("Text sent by user: "+query);
+/*/*var parameters = {
+query: query
+};*/
 
-                };
+ conversation.message({
+  input: {'text': query}
+ },  function(err, response) {
+  if (err)
+    console.log('error:', err);
+  else
+  var text_arry = response.output.text;
+            // Get intent
+  if (response.intents.length > 0){
+    var intent = response.intents[0].intent;
+        var text_to_send;
+        var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
+        console.log(intent)
+        console.log(text_arry)
+        var headers = {
+            'Authorization': 'Token 475c505a594ac7112c9efe4e3a7a4b0ee52ab689'
 
-                var options = {
-                    url: 'https://api.jamnav.com/v1/locations/nearby/?lat='+latitude+'&lng='+longitude,
-                    headers: headers
-                };
+        };
 
-                request(options, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        var data = JSON.parse(body).features;
-                        var filtered = [];
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].properties.name == "N.C.B. A.T.M. (National Commercial Bank)") {
-                                filtered.push(data[i]);
-                            }
-                        }
-                        var lowest = Number.POSITIVE_INFINITY;
-                        var highest = Number.NEGATIVE_INFINITY;
-                        var tmp;
-                        for (var i=filtered.length-1; i>=0; i--) {
-                            tmp = filtered[i].properties.proximity.km;
-                            if (tmp < lowest) lowest = tmp;
-                            if (tmp > highest) highest = tmp;
-                        }
+        var options = {
+            headers: headers
+        };
 
-                        if(intent === "numberATMs"){
-                            text_to_send = mytext.replace("Number", filtered.length.toString());
+        if (intent === 'Police_Station'){
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude
+        }
+        else if(intent === 'Fire_Station'){
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude
+        }
 
-                        }
-                        else if(intent === "Greetings") {
-                            text_to_send = text_arry[Math.floor(Math.random() * text_arry.length)];
+        console.log(options)
+        request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var data = JSON.parse(body).features;
+                console.log(util.inspect(data, { showHidden: true, depth: null }));
 
-                        }
-                        else if (intent === "nearATM"){
-                            text_to_send = mytext.replace("number", lowest.toFixed(2));
+                // if(intent === "Police_Station"){
+                //     text_to_send = mytext.replace("Number", filtered.length.toString());
 
-                        }
+                // }
+                // else if(intent === "Fire_Station") {
+                //     text_to_send = text_arry[Math.floor(Math.random() * text_arry.length)];
 
-                        params = {
-                            text: text_to_send,
-                            voice: 'en-US_AllisonVoice',
-                            accept: 'audio/mp3'
-                        };
-                        text_to_speech.synthesize(params).on('error', function(error) {
-                            console.log('Error:', error);
-                        }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
-                            console.log("Finished writing the file");
-                            res.json({
-                              "audio-file": "check the audio file",
-                              "features": filtered
-                            });
-                        });
-                    }
-                });
+                // }
 
 
+                res.send(data);
 
 
+                // params = {
+                //     text: text_to_send,
+                //     voice: 'en-US_AllisonVoice',
+                //     accept: 'audio/mp3'
+                // };
+                // text_to_speech.synthesize(params).on('error', function(error) {
+                //     console.log('Error:', error);
+                // }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
+                //     console.log("Finished writing the file");
+                //     res.json({
+                //       "audio-file": "check the audio file",
+                //       "features": filtered
+                //     });
+                // });
+            }else{
+              console.log(response.statusCode)
+            }
         });
 
+  }
+});
+
+});
 
 
-    });
 
 
 
-
-
-module.exports = router;
+module.exports = app;
