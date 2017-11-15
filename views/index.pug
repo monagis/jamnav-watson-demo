@@ -109,13 +109,14 @@ html(lang='en')
                       console.log(data);
                       console.log(status);
                       if (status === "success") {
-                        initMap(data.features);
-                        console.log(data.features)
+                        if (data.features == 'none'){
 
-                          //- document.getElementById('sound1').play();
-
-                           var voice = "voice.mp3";
-                           $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
+                        }else{
+                          initMap(data.features);
+                          console.log(data.features)
+                        }
+                       var voice = "voice.mp3";
+                       $('<audio src="/' + voice + '?noCache=' + Math.floor(Math.random() * 1000000) + '" type="audio/mpeg" autoplay controls></audio>');
 
                           //$(".map-container").show();
 

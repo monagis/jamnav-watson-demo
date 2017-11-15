@@ -78,8 +78,24 @@ query: query
         else if(intent === 'Fire_Station'){
             options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude+"&parish=St. Andrew"
         }
-
-        request(options, function (error, response, body) {
+        if (intent === "hello"){
+          text_to_send = text_arry[0]
+          params = {
+                text: text_to_send,
+                voice: 'en-US_AllisonVoice',
+                accept: 'audio/mp3'
+            };
+            text_to_speech.synthesize(params).on('error', function(error) {
+                console.log('Error:', error);
+            }).pipe(fs.createWriteStream('public/voice.mp3')).on('finish', function () {
+                console.log("Finished writing the file");
+                res.json({
+                  "audio-file": "check the audio file",
+                  'features':'none'
+                });
+            });
+          }else{
+              request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var data = JSON.parse(body).features;
                 count = JSON.parse(body).count;
@@ -116,6 +132,9 @@ query: query
               console.log(response.statusCode)
             }
         });
+      }
+
+
 
   }
 });
