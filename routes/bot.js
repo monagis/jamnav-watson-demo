@@ -73,10 +73,10 @@ query: query
         };
 
         if (intent === 'Police_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude+"&parish=St. Andrew"
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude
         }
         else if(intent === 'Fire_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude+"&parish=St. Andrew"
+            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude
         }
         if (intent === "hello"){
           text_to_send = text_arry[0]
