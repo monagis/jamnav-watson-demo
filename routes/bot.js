@@ -3,13 +3,10 @@ var router = express.Router();
 var ConversationV1 = require('watson-developer-cloud/conversation/v1');
 var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 var request = require('request');
-//var assert = require('assert');
-//var googleplaces = require('googleplaces');
 var text_to_speech = new TextToSpeechV1 ({
     username: '5bd6c555-a485-41a1-8854-bddfdd00e16f',
     password: 'z5YmLkDYh5Ve'
 });
-//var config = require('../config.js');
 var fs = require('fs');
 var conversation = new ConversationV1({
     username: '4ebede69-4162-427f-916d-47631a69bd03',
@@ -20,10 +17,6 @@ var conversation = new ConversationV1({
 });
 const util = require('util');
 
-
-//var googlePlaces = new googleplaces(config.apiKey, config.outputFormat);
-
-/* GET home page. */
 app = express()
 
 function closest(array){
@@ -47,10 +40,6 @@ var latitude = req.body.lat;
 var longitude = req.body.long;
 var query = req.body.query;
 
-/*/*var parameters = {
-query: query
-};*/
-
  conversation.message({
   input: {'text': query}
  },  function(err, response) {
@@ -64,8 +53,7 @@ query: query
         var text_to_send;
         var mytext = text_arry[Math.floor(Math.random() * text_arry.length)];
         var headers = {
-            'Authorization': 'Token 475c505a594ac7112c9efe4e3a7a4b0ee52ab689'
-
+            'Authorization': 'Token e9c193619561e04d193238196d7307af9c36446c'
         };
 
         var options = {
@@ -73,10 +61,10 @@ query: query
         };
 
         if (intent === 'Police_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude
+            options['url'] = 'https://api-test.jamnav.com/v1/locations/nearby/?categories=Police Station&lat='+latitude+"&lng="+longitude
         }
         else if(intent === 'Fire_Station'){
-            options['url'] = 'https://api.jamnav.com/v1.0/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude
+            options['url'] = 'https://api-test.jamnav.com/v1/locations/nearby/?categories=Fire Dept&lat='+latitude+"&lng="+longitude
         }
         if (intent === "hello"){
           text_to_send = text_arry[0]
@@ -133,16 +121,7 @@ query: query
             }
         });
       }
-
-
-
   }
 });
-
 });
-
-
-
-
-
 module.exports = app;
