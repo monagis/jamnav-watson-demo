@@ -48,15 +48,15 @@ html(lang='en')
 
         var lat, long;
         var map;
-        function initMap(data) {
-          var uluru = {lat: 18.014251599999998, lng: -76.75152489999999};
+        function initMap(data, lat, long) {
+          var position = {lat: lat, lng: long};
           map = new google.maps.Map(document.getElementById('map'), {
             zoom: 4,
-            center: uluru,
+            center: position,
             zoom: 12
           });
           var marker = new google.maps.Marker({
-            position: uluru,
+            position: position,
             map: map,
             icon: {
               path: google.maps.SymbolPath.CIRCLE,
@@ -79,20 +79,19 @@ html(lang='en')
 
         }
         $.LoadingOverlay("show");
-        if (navigator.geolocation) {
-             navigator.geolocation.getCurrentPosition(function (position) {
-                $.LoadingOverlay("hide");
 
-                lat = position.coords.latitude
-                long = position.coords.longitude
-             });
-
-         } else {
-             x.innerHTML = "Geolocation is not supported by this browser.";
-         }
 
         $(document).ready(function () {
-            initMap([])
+          if (navigator.geolocation) {
+           navigator.geolocation.getCurrentPosition(function (position) {
+              $.LoadingOverlay("hide");
+              lat = position.coords.latitude
+              long = position.coords.longitude
+              initMap([], lat, long)
+           });
+           } else {
+              x.innerHTML = "Geolocation is not supported by this browser.";
+           }
             $("button").click(function () {
                 $.LoadingOverlay("show");
                 var x = document.getElementById("geotext");
@@ -112,7 +111,7 @@ html(lang='en')
                         if (data.features == 'none'){
 
                         }else{
-                          initMap(data.features);
+                          initMap(data.features, lat, long);
                           console.log(data.features)
                         }
                        var voice = "voice.mp3";
