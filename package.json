@@ -21,7 +21,7 @@
 		"requests": "^0.2.2",
 		"serve-favicon": "~2.4.5",
 		"url-parse": "^1.2.0",
-		"watson-developer-cloud": "^2.41.1"
+		"watson-developer-cloud": "^2.42.0"
 	},
 	"repository": {},
 	"engines": {

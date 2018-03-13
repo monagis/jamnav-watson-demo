@@ -1,19 +1,17 @@
 var express = require('express');
 var router = express.Router();
-var ConversationV1 = require('watson-developer-cloud/conversation/v1');
-var TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
+var watson = require('watson-developer-cloud');
 var request = require('request');
-var text_to_speech = new TextToSpeechV1 ({
-    username: '5bd6c555-a485-41a1-8854-bddfdd00e16f',
-    password: 'z5YmLkDYh5Ve'
+var text_to_speech = new watson.TextToSpeechV1 ({
+    username: '52865592-04aa-478b-8430-36b6e28a321e',
+    password: 'NdBp5lQ0rOEK'
 });
 var fs = require('fs');
-var conversation = new ConversationV1({
-    username: '4ebede69-4162-427f-916d-47631a69bd03',
-    password: 'JyoAV6amHoIv',
-    path: { workspace_id: 'acd6a15a-6be0-4a92-b0a9-8a3bd49adb4e' },
-    version: 'v1',
-    version_date: '2017-05-26'
+var conversation = new watson.ConversationV1({
+    username: '4a7b84dd-131c-4f53-8396-c0452911349c',
+    password: 'W3Zo561MSQOs',
+    path: { workspace_id: '15b3dc40-6409-40ab-af96-a6b204cae994' },
+    version_date: '2018-02-16'
 });
 const util = require('util');
 
